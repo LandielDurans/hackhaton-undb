@@ -10,7 +10,6 @@ import { useMeta } from "@/lib/queries";
 import { useFiltrosUrl } from "@/lib/filtros";
 import { ANALISES, COR_FAIXA, faixaAnalise, legendaAnalise, valorAnalise, type Analise } from "@/lib/analises";
 import { cn } from "@/lib/format";
-import { iconeEscola, PORTE_ROTULO, type Porte } from "@/lib/icones-escola";
 import type { EscolaAnalise, Notificacao, PainelEscolas } from "@/lib/types";
 import { ErrorState, PageLoading, Skeleton } from "@/components/ui/states";
 
@@ -49,6 +48,15 @@ function Rede() {
 
   return (
     <div>
+      {/* Cabeçalho com foto real de São Luís (Palácio dos Leões) */}
+      <section className="relative mb-4 overflow-hidden rounded-2xl bg-azulejo-900 bg-cover bg-center px-6 py-5 text-white"
+        style={{ backgroundImage: "linear-gradient(90deg, rgb(8 28 51 / 0.94) 0%, rgb(13 43 74 / 0.75) 55%, rgb(13 43 74 / 0.2) 100%), url(/fotos/palacio-dos-leoes.jpg)", backgroundPosition: "center 40%" }}>
+        <p className="text-[11px] font-semibold tracking-[0.16em] text-sol">NÍVEL 1 · INTELIGÊNCIA REGIONAL</p>
+        <h1 className="mt-1 text-[22px] md:text-[28px] font-bold leading-tight">Onde estão os desafios da educação municipal?</h1>
+        <p className="mt-1 text-[13px] text-white/80">São Luís · 6 territórios demonstrativos · 18 escolas · dados fictícios</p>
+        <div className="faixa-slz-h absolute inset-x-0 bottom-0 h-[4px]" aria-hidden />
+      </section>
+
       {/* Cartões de análise */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5" role="tablist" aria-label="Análises do mapa">
         {ANALISES.map(a => {
@@ -57,13 +65,13 @@ function Rede() {
           return (
             <button key={a.id} role="tab" aria-selected={ativo} onClick={() => set({ analise: a.id })}
               className={cn("group relative overflow-hidden rounded-2xl border-2 px-4 pt-3.5 pb-4 text-left transition-all",
-                ativo ? "border-azulejo-700 bg-azulejo-700 text-white shadow-[0_8px_24px_-10px_rgba(15,59,145,0.7)]" : "border-azulejo-900/15 bg-surface hover:border-azulejo-500 hover:-translate-y-0.5")}>
+                ativo ? "border-azulejo-700 bg-azulejo-700 text-white shadow-[0_8px_24px_-10px_rgba(13,43,74,0.7)]" : "border-azulejo-900/15 bg-surface hover:border-azulejo-500 hover:-translate-y-0.5")}>
               <span className={cn("mb-2 flex h-8 w-8 items-center justify-center rounded-full", ativo ? "bg-white text-azulejo-700" : "bg-azulejo-50 text-azulejo-700")}>
                 <Icon size={17} />
               </span>
               <span className="block font-display text-[15px] font-bold leading-snug">{a.titulo}</span>
               <span className={cn("mt-1 block text-[12px]", ativo ? "text-white/75" : "text-ink-3")}>{painel.data ? resumo[a.id] : "…"}</span>
-              {ativo && <span className="faixas-ma-h absolute inset-x-0 bottom-0 h-[5px]" aria-hidden />}
+              {ativo && <span className="faixa-slz-h absolute inset-x-0 bottom-0 h-[5px]" aria-hidden />}
             </button>
           );
         })}
@@ -104,15 +112,6 @@ function Rede() {
                 <li key={fx} className="flex items-center gap-2"><span className="h-3 w-3 rounded-full" style={{ background: COR_FAIXA[fx], boxShadow: `0 0 8px 2px ${COR_FAIXA[fx]}66` }} />{r}</li>
               ))}
             </ul>
-            <p className="mt-2 mb-0.5 border-t border-line pt-1.5 text-[11px] font-bold uppercase tracking-wider text-azulejo-900">Porte</p>
-            <ul className="flex items-end gap-3 text-[11px] text-ink-2">
-              {([["PEQUENA", "< 200"], ["MEDIA", "200–1 mil"], ["GRANDE", "> 1 mil"]] as [Porte, string][]).map(([p, r]) => (
-                <li key={p} className="flex flex-col items-center gap-0.5" title={PORTE_ROTULO[p]}>
-                  <span className="flex h-7 items-end" dangerouslySetInnerHTML={{ __html: iconeEscola(p, "#7d8db3").html.replace(/width="[\d.]+" height="[\d.]+"/, 'height="26"') }} />
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {selecionada && <CartaoEscola e={selecionada} analise={analise} materia={materia} crit={crit} podeAbrir={usuario.papel === "GESTOR_REDE" || usuario.escolaId === selecionada.id} onFechar={() => set({ escola: "" })} />}
@@ -146,7 +145,7 @@ function Seletor({ rotulo, valor, onChange, opcoes, todos }: { rotulo: string; v
 }
 
 const SEV: Record<Notificacao["severidade"], { cor: string; rot: string }> = {
-  ALTA: { cor: "#dc2626", rot: "Urgente" }, MEDIA: { cor: "#d4a106", rot: "Atenção" }, BAIXA: { cor: "#2563eb", rot: "Acompanhar" },
+  ALTA: { cor: "#d9573f", rot: "Urgente" }, MEDIA: { cor: "#e0aa12", rot: "Atenção" }, BAIXA: { cor: "#2071b7", rot: "Acompanhar" },
 };
 
 function Notificacoes({ lista, carregando, onSelecionar, selecionada }: { lista?: Notificacao[]; carregando: boolean; onSelecionar: (id: string) => void; selecionada: string }) {
@@ -187,7 +186,6 @@ function CartaoEscola({ e, analise, materia, crit, podeAbrir, onFechar }: {
         <div>
           <p className="font-display text-[16px] font-bold leading-tight">{e.nome}</p>
           <p className="text-[12px] text-ink-3">{e.bairro} · {e.territorioNome}</p>
-          <p className="text-[12px] text-ink-3">{PORTE_ROTULO[e.porte].split(" · ")[0]} · {e.matriculasEscola.toLocaleString("pt-BR")} estudantes</p>
         </div>
         <button onClick={onFechar} className="rounded-md p-1 text-ink-3 hover:bg-canvas" aria-label="Fechar"><X size={16} /></button>
       </div>
