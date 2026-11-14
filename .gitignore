@@ -3,4 +3,4 @@ backend/target/
 frontend/node_modules/
 frontend/.next/
 *.log
-.vscode
+.vscode/
