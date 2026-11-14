@@ -6,7 +6,7 @@ import { ArrowRight, Building2, GraduationCap, Landmark, Lock, MapPinned, School
 import { api } from "@/lib/api";
 import { paginaInicial, useAuth } from "@/lib/auth";
 import type { Usuario } from "@/lib/types";
-import { Logo } from "@/components/layout/logo";
+import { Logo, LogoMark, LogoPrefeitura } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
 import { Skeleton } from "@/components/ui/states";
@@ -43,15 +43,17 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-[1.05fr_1fr]">
-      <section className="azulejo-pattern relative flex flex-col justify-between p-8 md:p-12 md:pl-16 text-white overflow-hidden">
-        <div className="faixas-ma-v absolute inset-y-0 left-0 w-3 md:w-5" aria-hidden />
-        <svg className="pointer-events-none absolute -right-24 -bottom-24 h-[420px] w-[420px] opacity-[0.07]" viewBox="0 0 34 34" aria-hidden>
-          <path d="M17 7.5l2.6 7.9h8.3l-6.7 4.9 2.6 7.9L17 23.3l-6.8 4.9 2.6-7.9-6.7-4.9h8.3z" fill="#fff" />
-        </svg>
-        <Logo />
+      <section className="azulejo-pattern relative flex flex-col justify-between p-8 md:p-12 md:pl-16 text-white overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: "linear-gradient(90deg, rgb(8 28 51 / 0.95) 0%, rgb(13 43 74 / 0.82) 55%, rgb(13 43 74 / 0.45) 100%), url(/fotos/centro-historico.jpg)" }}>
+        <div className="faixa-slz-v absolute inset-y-0 left-0 w-2 md:w-3" aria-hidden />
+        <div className="pointer-events-none absolute -right-20 -bottom-20 opacity-[0.10]" aria-hidden><LogoMark size={380} centro="#0d2b4a" /></div>
+        <div className="flex items-start justify-between gap-4">
+          <Logo />
+          <LogoPrefeitura altura={64} className="drop-shadow" />
+        </div>
         <div className="max-w-xl my-12">
           <p className="text-xs font-semibold tracking-[0.2em] text-white/70 mb-4">HACKATHON SÃO LUÍS DO FUTURO · DESAFIO 6</p>
-          <h1 className="text-3xl md:text-[42px] font-bold leading-[1.1]">Do território ao estudante: decisões pedagógicas conectadas.</h1>
+          <h1 className="text-3xl md:text-[44px] font-bold leading-[1.08]">A rede inteira,<br />numa só leitura.</h1>
           <p className="mt-5 text-[15.5px] leading-relaxed text-white/80">
             A SEMED identifica onde existem desafios, a escola compreende o que precisa melhorar e o professor recebe apoio para
             decidir como agir. O Conecta Educação SLZ conecta essas decisões e acompanha seus resultados.
@@ -60,7 +62,7 @@ export default function LoginPage() {
             {[["Integrar", MapPinned], ["Visualizar", Building2], ["Planejar", School], ["Acompanhar", GraduationCap]].map(([t, I], i) => {
               const Icon = I as typeof MapPinned;
               return (
-                <li key={t as string} className="rounded-xl bg-white/8 border border-white/12 p-3">
+                <li key={t as string} className="rounded-xl bg-white/8 border border-white/12 p-3 backdrop-blur-[2px]" style={{ boxShadow: `inset 0 3px 0 ${["#2071b7", "#39a6de", "#a8c048", "#f2c230"][i]}` }}>
                   <Icon size={16} className="text-white mb-2" />
                   <span className="text-white/55 tabular">0{i + 1}</span> <span className="font-semibold">{t as string}</span>
                 </li>
@@ -68,10 +70,13 @@ export default function LoginPage() {
             })}
           </ol>
         </div>
-        <p className="text-xs text-white/55 max-w-lg">
-          Ambiente de demonstração com dados fictícios. Escolas, estudantes e professores não correspondem a pessoas ou unidades reais.
-          Não há integração com sistemas da SEMED ou com o SIMAE.
-        </p>
+        <div className="space-y-3">
+          <p className="text-xs text-white/60 max-w-lg">
+            Ambiente de demonstração com dados fictícios. Escolas, estudantes e professores não correspondem a pessoas ou unidades reais.
+            Não há integração com sistemas da SEMED ou com o SIMAE.
+          </p>
+          <p className="text-[10.5px] text-white/40">Foto: Centro Histórico de São Luís — JLPizzol, Wikimedia Commons (CC BY-SA 4.0)</p>
+        </div>
       </section>
 
       <section className="flex items-center justify-center p-6 md:p-12 bg-canvas">
