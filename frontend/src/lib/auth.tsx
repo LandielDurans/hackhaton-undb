@@ -53,5 +53,5 @@ export function useAuth() {
 export function paginaInicial(u: Usuario): string {
   if (u.papel === "GESTOR_REDE") return "/rede";
   if (u.papel === "COORDENADOR") return `/escolas/${u.escolaId}`;
-  return "/turmas";
+  return "/frequencia";
 }

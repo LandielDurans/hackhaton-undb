@@ -8,9 +8,9 @@ import { api, qs } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useMeta } from "@/lib/queries";
 import { useFiltrosUrl } from "@/lib/filtros";
-import { ANALISES, COR_FAIXA, faixaAnalise, legendaAnalise, valorAnalise, type Analise } from "@/lib/analises";
+import { ANALISES, corGradiente, legendaGradiente, scoreAnalise, valorAnalise, type Analise } from "@/lib/analises";
 import { cn } from "@/lib/format";
-import { iconeEscola, PORTE_ROTULO, type Porte } from "@/lib/icones-escola";
+import { svgIconeEscola, PORTE_ROTULO, type Porte } from "@/lib/icones-escola";
 import type { EscolaAnalise, Notificacao, PainelEscolas } from "@/lib/types";
 import { ErrorState, PageLoading, Skeleton } from "@/components/ui/states";
 
@@ -25,11 +25,16 @@ export default function RedePage() {
 function Rede() {
   const { usuario } = useAuth();
   const meta = useMeta();
-  const [f, set] = useFiltrosUrl(["analise", "escola", "ano", "materia", "mapa"] as const);
+  const [f, set] = useFiltrosUrl(["analise", "polo", "escola", "ano", "materia", "mapa"] as const);
   const analise = (f.analise || "evasao") as Analise;
   const materia = f.materia || "MAT";
   const painel = useQuery({ queryKey: ["painel-escolas", f.ano], queryFn: () => api.get<PainelEscolas>("/api/rede/escolas" + qs({ ano: f.ano })) });
-  const selecionada = painel.data?.escolas.find(e => e.id === f.escola);
+  const escolasFiltradas = useMemo(() => {
+    const lista = painel.data?.escolas ?? [];
+    if (!f.polo) return lista;
+    return lista.filter(e => e.territorioId === f.polo);
+  }, [painel.data, f.polo]);
+  const selecionada = escolasFiltradas.find(e => e.id === f.escola);
 
   const resumo = useMemo(() => {
     const r = painel.data?.rede ?? {};
@@ -49,14 +54,15 @@ function Rede() {
 
   return (
     <div>
-      {/* Cabeçalho com foto real de São Luís (Palácio dos Leões) */}
+      {/* Cabeçalho oculto temporariamente
       <section className="relative mb-4 overflow-hidden rounded-2xl bg-azulejo-900 bg-cover bg-center px-6 py-5 text-white"
         style={{ backgroundImage: "linear-gradient(90deg, rgb(8 28 51 / 0.94) 0%, rgb(13 43 74 / 0.75) 55%, rgb(13 43 74 / 0.2) 100%), url(/fotos/palacio-dos-leoes.jpg)", backgroundPosition: "center 40%" }}>
         <p className="text-[11px] font-semibold tracking-[0.16em] text-sol">NÍVEL 1 · INTELIGÊNCIA REGIONAL</p>
         <h1 className="mt-1 text-[22px] md:text-[28px] font-bold leading-tight">Onde estão os desafios da educação municipal?</h1>
-        <p className="mt-1 text-[13px] text-white/80">São Luís · 6 territórios demonstrativos · 18 escolas · dados fictícios</p>
+        <p className="mt-1 text-[13px] text-white/80">São Luís · 7 núcleos territoriais · 256 escolas da rede municipal</p>
         <div className="faixa-slz-h absolute inset-x-0 bottom-0 h-[4px]" aria-hidden />
       </section>
+      */}
 
       {/* Cartões de análise */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5" role="tablist" aria-label="Análises do mapa">
@@ -65,23 +71,27 @@ function Rede() {
           const ativo = analise === a.id;
           return (
             <button key={a.id} role="tab" aria-selected={ativo} onClick={() => set({ analise: a.id })}
-              className={cn("group relative overflow-hidden rounded-2xl border-2 px-4 pt-3.5 pb-4 text-left transition-all",
+              className={cn("group relative overflow-hidden rounded-2xl border-2 px-4 py-3 text-left transition-all",
                 ativo ? "border-azulejo-700 bg-azulejo-700 text-white shadow-[0_8px_24px_-10px_rgba(13,43,74,0.7)]" : "border-azulejo-900/15 bg-surface hover:border-azulejo-500 hover:-translate-y-0.5")}>
-              <span className={cn("mb-2 flex h-8 w-8 items-center justify-center rounded-full", ativo ? "bg-white text-azulejo-700" : "bg-azulejo-50 text-azulejo-700")}>
-                <Icon size={17} />
-              </span>
-              <span className="block font-display text-[15px] font-bold leading-snug">{a.titulo}</span>
-              <span className={cn("mt-1 block text-[12px]", ativo ? "text-white/75" : "text-ink-3")}>{painel.data ? resumo[a.id] : "…"}</span>
+              <div className="flex items-center gap-2.5">
+                <span className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full", ativo ? "bg-white text-azulejo-700" : "bg-azulejo-50 text-azulejo-700")}>
+                  <Icon size={17} />
+                </span>
+                <span className="font-display text-[14.5px] font-bold leading-snug">{a.titulo}</span>
+              </div>
+              <span className={cn("mt-1.5 block text-[12px]", ativo ? "text-white/75" : "text-ink-3")}>{painel.data ? resumo[a.id] : "…"}</span>
               {ativo && <span className="faixa-slz-h absolute inset-x-0 bottom-0 h-[5px]" aria-hidden />}
             </button>
           );
         })}
       </div>
 
-      {/* Seletores (abaixo das três primeiras análises) */}
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+      {/* Seletores */}
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Seletor rotulo="Selecione o polo" valor={f.polo} onChange={v => set({ polo: v, escola: "" })}
+          opcoes={meta.data!.territorios.map(t => [t.id, t.nome])} todos="Todos os 7 polos" />
         <Seletor rotulo="Selecione a escola" valor={f.escola} onChange={v => set({ escola: v })}
-          opcoes={(painel.data?.escolas ?? []).slice().sort((a, b) => a.nome.localeCompare(b.nome)).map(e => [e.id, `${e.nome} · ${e.bairro}`])} />
+          opcoes={escolasFiltradas.slice().sort((a, b) => a.nome.localeCompare(b.nome)).map(e => [e.id, `${e.nome} · ${e.bairro}`])} />
         <Seletor rotulo="Selecione o ano" valor={f.ano} onChange={v => set({ ano: v })} opcoes={meta.data!.anos.map(a => [String(a), `${a}º ano`])} todos="Todos os anos" />
         <Seletor rotulo="Selecione a matéria" valor={f.materia} onChange={v => set({ materia: v, analise: "materia" })}
           opcoes={meta.data!.componentes.map(c => [c.id, c.nome])} />
@@ -91,7 +101,7 @@ function Rede() {
       <div className="mt-4 grid gap-4 xl:grid-cols-5">
         <section className="relative overflow-hidden rounded-2xl border-2 border-azulejo-900/80 bg-surface xl:col-span-4">
           {painel.data ? (
-            <MapaIlustrado escolas={painel.data.escolas} analise={analise} materia={materia} criterios={crit} selecionada={f.escola || undefined}
+            <MapaIlustrado escolas={escolasFiltradas} analise={analise} materia={materia} criterios={crit} selecionada={f.escola || undefined}
               onSelecionar={id => set({ escola: id })} usuario={usuario} detalhado={f.mapa === "detalhado"} />
           ) : painel.error ? <div className="p-5"><ErrorState error={painel.error} onRetry={() => painel.refetch()} /></div> : <Skeleton className="h-[620px] w-full rounded-none" />}
 
@@ -106,18 +116,29 @@ function Rede() {
           </div>
 
           {/* Legenda */}
-          <div className="absolute bottom-3 left-3 z-[500] rounded-xl border border-azulejo-900/20 bg-white/95 px-3 py-2.5 shadow-[var(--shadow-pop)]">
+          <div className="absolute bottom-3 left-3 z-[500] w-[225px] rounded-xl border border-azulejo-900/20 bg-white/95 px-3 py-2.5 shadow-[var(--shadow-pop)]">
             <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-azulejo-900">{ANALISES.find(a => a.id === analise)!.curto}{analise === "materia" ? ` · ${materia === "MAT" ? "Matemática" : "Português"}` : ""}</p>
-            <ul className="space-y-1 text-[12px] text-ink-2">
-              {legendaAnalise(analise, crit).map(([fx, r]) => (
-                <li key={fx} className="flex items-center gap-2"><span className="h-3 w-3 rounded-full" style={{ background: COR_FAIXA[fx], boxShadow: `0 0 8px 2px ${COR_FAIXA[fx]}66` }} />{r}</li>
-              ))}
-            </ul>
+            <div className="space-y-1">
+              <div
+                className="h-3 w-full rounded-full border border-black/10"
+                style={{ background: "linear-gradient(90deg, rgb(224,62,54) 0%, rgb(234,179,8) 50%, rgb(34,197,94) 100%)" }}
+              />
+              {(() => {
+                const g = legendaGradiente(analise, crit);
+                return (
+                  <div className="flex justify-between text-[10.5px] font-medium text-ink-2">
+                    <span>{g.min}</span>
+                    <span>{g.mid}</span>
+                    <span>{g.max}</span>
+                  </div>
+                );
+              })()}
+            </div>
             <p className="mt-2 mb-0.5 border-t border-line pt-1.5 text-[11px] font-bold uppercase tracking-wider text-azulejo-900">Porte</p>
             <ul className="flex items-end gap-3 text-[11px] text-ink-2">
-              {([["PEQUENA", "< 200"], ["MEDIA", "200–1 mil"], ["GRANDE", "> 1 mil"]] as [Porte, string][]).map(([p, r]) => (
+              {([["PEQUENA", "< 200"], ["MEDIA", "200–450"], ["GRANDE", "> 450"]] as [Porte, string][]).map(([p, r]) => (
                 <li key={p} className="flex flex-col items-center gap-0.5" title={PORTE_ROTULO[p]}>
-                  <span className="flex h-7 items-end" dangerouslySetInnerHTML={{ __html: iconeEscola(p, "#7d8db3").html.replace(/width="[\d.]+" height="[\d.]+"/, 'height="26"') }} />
+                  <span className="flex h-9 items-end" dangerouslySetInnerHTML={{ __html: svgIconeEscola(p, "#71717a", 0.85) }} />
                   <span>{r}</span>
                 </li>
               ))}
@@ -196,17 +217,17 @@ function CartaoEscola({ e, analise, materia, crit, podeAbrir, onFechar }: {
         <div>
           <p className="font-display text-[16px] font-bold leading-tight">{e.nome}</p>
           <p className="text-[12px] text-ink-3">{e.bairro} · {e.territorioNome}</p>
-          <p className="text-[12px] text-ink-3">{PORTE_ROTULO[e.porte].split(" · ")[0]} · {e.matriculasEscola.toLocaleString("pt-BR")} estudantes</p>
+          <p className="text-[12px] text-ink-3">{PORTE_ROTULO[(e.porte ?? "PEQUENA")].split(" · ")[0]} · {(e.matriculasEscola ?? e.evasao?.matriculados ?? 0).toLocaleString("pt-BR")} estudantes</p>
         </div>
         <button onClick={onFechar} className="rounded-md p-1 text-ink-3 hover:bg-canvas" aria-label="Fechar"><X size={16} /></button>
       </div>
       <ul className="mt-3 space-y-1.5">
         {ANALISES.map(a => {
-          const fx = faixaAnalise(e, a.id, crit, materia);
+          const cor = corGradiente(scoreAnalise(e, a.id, crit, materia));
           return (
             <li key={a.id} className={cn("flex items-center justify-between gap-2 rounded-lg px-2 py-1 text-[12.5px]", a.id === analise && "bg-azulejo-50")}>
               <span className="text-ink-2">{a.curto}</span>
-              <span className="inline-flex items-center gap-1.5 font-semibold"><span className="h-2.5 w-2.5 rounded-full" style={{ background: COR_FAIXA[fx] }} />{valorAnalise(e, a.id, materia)}</span>
+              <span className="inline-flex items-center gap-1.5 font-semibold"><span className="h-2.5 w-2.5 rounded-full" style={{ background: cor }} />{valorAnalise(e, a.id, materia)}</span>
             </li>
           );
         })}

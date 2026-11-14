@@ -63,4 +63,86 @@ export function valorAnalise(e: EscolaAnalise, a: Analise, materia: string): str
   }
 }
 
+const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+
+/**
+ * Score contínuo normalizado [0.0 = Crítico/Vermelho .. 0.5 = Atenção/Amarelo .. 1.0 = Adequado/Verde].
+ */
+export function scoreAnalise(e: EscolaAnalise, a: Analise, crit: Crit, materia: string): number | null {
+  switch (a) {
+    case "evasao": {
+      const t = e.evasao.taxa;
+      if (t === undefined || t === null) return null;
+      // <= 3% -> 1.0 (verde), ~11.5% -> 0.5 (amarelo), >= 20% -> 0.0 (vermelho)
+      return clamp01((20 - t) / 17);
+    }
+    case "notas": {
+      const n = e.notas.nota;
+      if (n === undefined || n === null) return null;
+      const minN = Math.max(2, crit.atencao / 10 - 1.5);
+      const maxN = Math.min(9.5, crit.adequado / 10 + 1.5);
+      return clamp01((n - minN) / (maxN - minN));
+    }
+    case "materia": {
+      const n = e.porMateria[materia]?.nota;
+      if (n === undefined || n === null) return null;
+      const minN = Math.max(2, crit.atencao / 10 - 1.5);
+      const maxN = Math.min(9.5, crit.adequado / 10 + 1.5);
+      return clamp01((n - minN) / (maxN - minN));
+    }
+    case "escassez": {
+      const f = e.escassez.faltam;
+      // 0 -> 1.0 (verde), 2 -> 0.5 (amarelo), 4+ -> 0.0 (vermelho)
+      return clamp01((4 - f) / 4);
+    }
+    case "inclusao": {
+      const c = e.inclusao?.cobertura;
+      if (c === undefined || c === null) return null;
+      // <= 40% -> 0.0 (vermelho), ~67.5% -> 0.5 (amarelo), >= 95% -> 1.0 (verde)
+      return clamp01((c - 40) / 55);
+    }
+  }
+}
+
+export function corRgbGradiente(score: number | null): [number, number, number] {
+  if (score === null) return [156, 163, 175]; // cinza neutro
+  const s = clamp01(score);
+  // Paradas: 0.0 = Vermelho [224, 62, 54], 0.5 = Amarelo [234, 179, 8], 1.0 = Verde [34, 197, 94]
+  if (s <= 0.5) {
+    const t = s / 0.5;
+    return [
+      Math.round(224 + (234 - 224) * t),
+      Math.round(62 + (179 - 62) * t),
+      Math.round(54 + (8 - 54) * t),
+    ];
+  }
+  const t = (s - 0.5) / 0.5;
+  return [
+    Math.round(234 + (34 - 234) * t),
+    Math.round(179 + (197 - 179) * t),
+    Math.round(8 + (94 - 8) * t),
+  ];
+}
+
+export function corGradiente(score: number | null): string {
+  const [r, g, b] = corRgbGradiente(score);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+export function legendaGradiente(a: Analise, crit: Crit): { min: string; mid: string; max: string } {
+  const minN = Math.max(2, crit.atencao / 10 - 1.5).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+  const maxN = Math.min(9.5, crit.adequado / 10 + 1.5).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+  switch (a) {
+    case "evasao":
+      return { min: "≥ 20% (Crítico)", mid: "11%", max: "≤ 3% (Baixa)" };
+    case "notas":
+    case "materia":
+      return { min: `≤ ${minN}`, mid: "Média", max: `≥ ${maxN}` };
+    case "escassez":
+      return { min: "4+ vagas", mid: "2 vagas", max: "Completo" };
+    case "inclusao":
+      return { min: "≤ 40%", mid: "68%", max: "≥ 95%" };
+  }
+}
+
 export { COR_FAIXA };
