@@ -162,8 +162,39 @@ h1, h2, h3, .font-display {
   background: #f5f2ea; border: 2px solid #0d2b4a; color: #0d2b4a;
   box-shadow: 0 2px 6px rgb(13 43 74 / 0.25);
 }
-.cubo-escola { transition: transform 0.15s ease; filter: drop-shadow(0 2px 2px rgb(13 43 74 / 0.35)); }
-.cubo-escola:hover { transform: translateY(-2px) scale(1.08); }
-.cubo-escola.selecionada { transform: scale(1.25); }
+.icone-escola { display: block; transition: transform 0.15s ease; transform-origin: 50% 85%; filter: drop-shadow(0 2px 2px rgb(13 43 74 / 0.35)); }
+.marcador-escola:hover .icone-escola { transform: translateY(-2px) scale(1.08); }
 @keyframes pulso-ma { 0% { transform: scale(0.6); opacity: 0.9 } 100% { transform: scale(1.8); opacity: 0 } }
-.pulso-escola { position: absolute; inset: -6px; border-radius: 999px; border: 3px solid #d9573f; animation: pulso-ma 1.4s ease-out infinite; }
+.pulso-escola { position: absolute; width: 44px; height: 20px; border-radius: 999px; border: 3px solid #d9573f; animation: pulso-ma 1.4s ease-out infinite; }
+
+/* Hachuras da cartografia ilustrada (padrões definidos em <PadroesSvg/>) */
+.mapa-ilustrado path.fill-agua { fill: url(#hachura-agua); }
+.mapa-ilustrado path.fill-mangue { fill: url(#zigue-mangue); }
+.mapa-ilustrado path.fill-mata { fill: url(#pontos-mata); }
+.mapa-ilustrado path.fill-parque { fill: url(#pontos-parque); }
+.mapa-ilustrado path.fill-areia { fill: url(#pontos-areia); }
+.mapa-ilustrado path.traco-mao { filter: drop-shadow(0 1px 0 rgb(13 43 74 / 0.25)); }
+.rotulo-agua {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  letter-spacing: 0.22em;
+  color: #1a5f9b;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 0 3px #e8f1f8, 0 0 3px #e8f1f8;
+}
+.rotulo-via {
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #1b2430;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 4px #fff;
+}
+
+.mapa-ilustrado .leaflet-control-scale-line {
+  border: 2px solid #0d2b4a; border-top: none; background: rgb(245 242 234 / 0.9);
+  color: #0d2b4a; font-weight: 700; font-size: 10.5px;
+}
