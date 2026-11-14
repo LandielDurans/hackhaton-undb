@@ -1,0 +1,50 @@
+# Conecta Educação SLZ — ambiente de demonstração
+# Uso: cp .env.example .env && docker compose up --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: conecta
+      POSTGRES_USER: ${DB_USER:-conecta}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-conecta}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-conecta} -d conecta"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/conecta
+      DB_USER: ${DB_USER:-conecta}
+      DB_PASSWORD: ${DB_PASSWORD:-conecta}
+      JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET no arquivo .env (mínimo 32 caracteres)}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      DEMO_SEED: ${DEMO_SEED:-true}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-demo123}
+      DEMO_REFERENCE_DATE: ${DEMO_REFERENCE_DATE:-2026-11-14}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${API_PORT:-8088}:8080"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        API_URL: http://api:8080
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-3300}:3000"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

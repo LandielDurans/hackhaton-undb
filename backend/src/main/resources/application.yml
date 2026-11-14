@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: conecta-educacao-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/conecta}
+    username: ${DB_USER:conecta}
+    password: ${DB_PASSWORD:conecta}
+  flyway:
+    enabled: true
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+conecta:
+  jwt:
+    # Em produção, defina JWT_SECRET (mín. 32 caracteres). O valor padrão é só para desenvolvimento local.
+    secret: ${JWT_SECRET:dev-only-secret-conecta-educacao-slz-troque-em-producao-2026}
+    validade-horas: ${JWT_VALIDITY_HOURS:8}
+    cookie-secure: ${COOKIE_SECURE:false}
+  demo:
+    seed: ${DEMO_SEED:true}
+    senha: ${DEMO_PASSWORD:demo123}
+    # Data de referência da demonstração ("hoje"), usada para prazos e situação dos planos.
+    data-referencia: ${DEMO_REFERENCE_DATE:2026-11-14}
+  criterios:
+    # Percentual de acerto a partir do qual o resultado é considerado adequado
+    adequado: ${CRITERIO_ADEQUADO:70}
+    # Abaixo deste percentual, o resultado indica necessidade de atenção
+    atencao: ${CRITERIO_ATENCAO:50}
+    # Variação mínima (pontos percentuais) entre avaliações comparáveis para indicar melhora ou queda
+    variacao-relevante: ${CRITERIO_VARIACAO:5}
+  privacidade:
+    # Agregados com menos estudantes do que este valor são suprimidos (proteção contra reidentificação)
+    minimo-agregacao: ${PRIVACIDADE_MINIMO:5}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:conecta;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""

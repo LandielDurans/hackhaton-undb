@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* =====================================================================
+   Conecta Educação SLZ — design tokens
+   Identidade: azul dos azulejos do Centro Histórico, terracota dos
+   casarões e o verde-maré da baía de São Marcos. Uso contido das cores.
+   ===================================================================== */
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: #0f1b2d;
+  --color-ink-2: #3c4a5e;
+  --color-ink-3: #64748b;
+  --color-canvas: #f4f6f9;
+  --color-surface: #ffffff;
+  --color-line: #e2e7ee;
+  --color-line-2: #cfd7e2;
+
+  --color-azulejo-50: #eef4fb;
+  --color-azulejo-100: #d9e6f6;
+  --color-azulejo-200: #b5cdeb;
+  --color-azulejo-500: #2e6db4;
+  --color-azulejo-600: #215a9c;
+  --color-azulejo-700: #17407a;
+  --color-azulejo-900: #0c2547;
+
+  --color-terracota-50: #fbf1ea;
+  --color-terracota-500: #d9773f;
+  --color-terracota-600: #b85d2a;
+
+  --color-mare-50: #e9f6f3;
+  --color-mare-600: #0f766e;
+
+  /* Faixas de desempenho (validadas para daltonismo; sempre com rótulo/ícone) */
+  --color-adequado: #1f8a70;
+  --color-adequado-bg: #e6f4ef;
+  --color-desenvolvimento: #c98a0b;
+  --color-desenvolvimento-ink: #8a5d00;
+  --color-desenvolvimento-bg: #fbf3df;
+  --color-atencao: #c2410c;
+  --color-atencao-bg: #fcece4;
+
+  /* Evolução (divergente): melhora azul / estável cinza / queda laranja */
+  --color-melhora: #256abf;
+  --color-estavel: #8f8e88;
+  --color-queda: #d95926;
+
+  --radius-card: 14px;
+  --shadow-card: 0 1px 2px rgb(15 27 45 / 0.04), 0 1px 1px rgb(15 27 45 / 0.03);
+  --shadow-pop: 0 10px 30px -10px rgb(15 27 45 / 0.25);
+}
+
+html,
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-azulejo-500);
+  outline-offset: 2px;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Padrão de azulejo (motivo local, usado com discrição) */
+.azulejo-pattern {
+  background-color: var(--color-azulejo-700);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.09' stroke-width='1.2'%3E%3Cpath d='M28 6l6 16 16 6-16 6-6 16-6-16-16-6 16-6z'/%3E%3Ccircle cx='28' cy='28' r='4'/%3E%3Cpath d='M0 0l10 10M56 0L46 10M0 56l10-10M56 56L46 46'/%3E%3Crect x='0.6' y='0.6' width='54.8' height='54.8'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Leaflet — integração visual */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: #e9eef3;
+}
+.tiles-suaves { filter: saturate(0.35) brightness(1.05) contrast(0.95); }
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: var(--shadow-pop);
+}
+.leaflet-popup-content { margin: 14px 16px; }
+.leaflet-tooltip.rotulo-territorio {
+  background: rgb(255 255 255 / 0.92);
+  border: 1px solid var(--color-line-2);
+  border-radius: 999px;
+  box-shadow: none;
+  color: var(--color-ink-2);
+  font-weight: 600;
+  font-size: 11px;
+  padding: 2px 8px;
+}
+.leaflet-tooltip.rotulo-territorio::before { display: none; }
+.marcador-contagem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgb(15 27 45 / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
