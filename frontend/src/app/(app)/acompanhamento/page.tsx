@@ -32,7 +32,7 @@ function Acomp() {
   if (q.error) return <ErrorState error={q.error} />;
   const d = q.data!;
   const max = Math.max(1, ...ESCOPOS.map(e => STATUS.reduce((a, s) => a + d.contagem[e][s], 0)));
-  const cores: Record<StatusPlano, string> = { PLANEJADO: "#b7d3f6", EM_ANDAMENTO: "#3987e5", CONCLUIDO: "#1c5cab", REAVALIADO: "#0d366b" };
+  const cores: Record<StatusPlano, string> = { PLANEJADO: "#a9cbe8", EM_ANDAMENTO: "#39a6de", CONCLUIDO: "#2071b7", REAVALIADO: "#0d2b4a" };
   const icDec: Record<Decisao, React.ReactNode> = { FUNCIONOU: <CheckCircle2 size={16} className="text-adequado" />, AJUSTAR: <Wrench size={16} className="text-desenvolvimento" />, SUBSTITUIR: <RefreshCw size={16} className="text-atencao" /> };
 
   return (
