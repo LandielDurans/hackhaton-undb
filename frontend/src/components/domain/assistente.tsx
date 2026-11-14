@@ -20,7 +20,7 @@ export function SugestaoDocente({ r, podeAgir, abertaInicial = false }: { r: Rec
   const router = useRouter();
   const e: EstrategiaSugerida | undefined = r.estrategias[sel];
   const descartada = r.decisao?.decisao === "DESCARTADA";
-  const cor = r.prioridade === "ALTA" ? "#dc2626" : r.prioridade === "MEDIA" ? "#d4a106" : "#2563eb";
+  const cor = r.prioridade === "ALTA" ? "#d9573f" : r.prioridade === "MEDIA" ? "#e0aa12" : "#2071b7";
   const ultima = r.evidencias.filter(x => x.rotulo.startsWith("AV")).slice(-1)[0];
 
   return (

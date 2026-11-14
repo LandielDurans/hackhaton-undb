@@ -34,7 +34,7 @@ export function RecomendacaoCard({ r, podeAgir = true, defaultOpen = false, most
   return (
     <Card className={cn("overflow-hidden", descartada && "opacity-70")}>
       <button className="w-full text-left px-4 py-3.5 flex items-start gap-3 hover:bg-canvas/60" onClick={() => setAberta(!aberta)} aria-expanded={aberta}>
-        <span className={cn("mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full", r.prioridade === "ALTA" ? "bg-[#dc2626]" : r.prioridade === "MEDIA" ? "bg-[#d4a106]" : "bg-[#a3a8b0]")} aria-hidden />
+        <span className={cn("mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full", r.prioridade === "ALTA" ? "bg-[#d9573f]" : r.prioridade === "MEDIA" ? "bg-[#e0aa12]" : "bg-[#a3a8b0]")} aria-hidden />
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-[14.5px] text-ink leading-snug">{r.titulo}</h3>
           <p className="text-[13px] text-ink-2 mt-1 leading-relaxed line-clamp-2">{r.acaoSugerida}</p>
