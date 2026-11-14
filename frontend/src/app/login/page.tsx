@@ -43,10 +43,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-[1.05fr_1fr]">
-      <section className="azulejo-pattern relative flex flex-col justify-between p-8 md:p-12 text-white overflow-hidden">
+      <section className="azulejo-pattern relative flex flex-col justify-between p-8 md:p-12 md:pl-16 text-white overflow-hidden">
+        <div className="faixas-ma-v absolute inset-y-0 left-0 w-3 md:w-5" aria-hidden />
+        <svg className="pointer-events-none absolute -right-24 -bottom-24 h-[420px] w-[420px] opacity-[0.07]" viewBox="0 0 34 34" aria-hidden>
+          <path d="M17 7.5l2.6 7.9h8.3l-6.7 4.9 2.6 7.9L17 23.3l-6.8 4.9 2.6-7.9-6.7-4.9h8.3z" fill="#fff" />
+        </svg>
         <Logo />
         <div className="max-w-xl my-12">
-          <p className="text-xs font-semibold tracking-[0.2em] text-terracota-500 mb-4">HACKATHON SÃO LUÍS DO FUTURO · DESAFIO 6</p>
+          <p className="text-xs font-semibold tracking-[0.2em] text-white/70 mb-4">HACKATHON SÃO LUÍS DO FUTURO · DESAFIO 6</p>
           <h1 className="text-3xl md:text-[42px] font-bold leading-[1.1]">Do território ao estudante: decisões pedagógicas conectadas.</h1>
           <p className="mt-5 text-[15.5px] leading-relaxed text-white/80">
             A SEMED identifica onde existem desafios, a escola compreende o que precisa melhorar e o professor recebe apoio para
@@ -57,7 +61,7 @@ export default function LoginPage() {
               const Icon = I as typeof MapPinned;
               return (
                 <li key={t as string} className="rounded-xl bg-white/8 border border-white/12 p-3">
-                  <Icon size={16} className="text-terracota-500 mb-2" />
+                  <Icon size={16} className="text-white mb-2" />
                   <span className="text-white/55 tabular">0{i + 1}</span> <span className="font-semibold">{t as string}</span>
                 </li>
               );

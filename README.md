@@ -45,7 +45,7 @@ API_URL=http://localhost:8088 npm run dev     # http://localhost:3300
 ### Testes
 
 ```bash
-cd backend && mvn test        # 23 testes: indicadores, ciclo do plano, priorização, permissões, consistência entre níveis
+cd backend && mvn test        # 27 testes: indicadores, ciclo do plano, priorização, permissões, consistência entre níveis
 cd frontend && npm test && npm run typecheck
 ```
 
@@ -67,9 +67,11 @@ Senha de todos: `demo123` (configurável). A tela de entrada lista os perfis; o 
 
 ## Roteiro de demonstração (≈ 7 minutos)
 
-1. **Gestão regional** — entre como *Rosângela (SEMED)*. No **Mapa da rede**, filtre *Matemática · 5º ano* e alterne as camadas
-   (Desempenho → Dificuldades → Evolução → Formação → Planos). Os focos de calor (vermelho, amarelo, azul, verde) mostram
-   Itaqui-Bacanga e Cidade Operária com dificuldade em frações. Abra uma sugestão: evidências por escola e *por que esta prioridade*.
+1. **Gestão regional** — entre como *Rosângela (SEMED)*. O **Mapa da rede** segue o esboço da equipe: cinco análises no topo
+   (Evasão, Desempenho por notas, Desempenho por matéria, Escassez de professores, Educação especial), seletores de escola, ano e
+   matéria, o mapa ilustrado da ilha (contorno e avenidas do OpenStreetMap, rodoviária e aeroporto) com escolas em cubos e focos de
+   calor vermelho/amarelo/azul/verde, e o painel **NOTIFICAÇÕES** ("Escola do Centro está com 32% de evasão!", "A escola do Turu
+   precisa de profissionais!", "O desempenho dos alunos no Bequimão está abaixo da média."). Clique numa notificação para focar a escola.
 2. **Escola** — clique na *EM Mangue Vivo* (Anjo da Guarda) → *Abrir diagnóstico*. Veja turmas, habilidades mais baixas, plano
    escolar vinculado ao plano territorial e recomendações (“Turmas do 5º ano com dificuldade em frações”).
 3. **Turma** — *5º ano A → Analisar*. A matriz mostra habilidade → descritor → AV1/AV2/AV3 → situação → apoio disponível.
@@ -89,7 +91,7 @@ Senha de todos: `demo123` (configurável). A tela de entrada lista os perfis; o 
 ## Arquitetura
 
 ```
-frontend/   Next.js 15 (App Router) · TypeScript · Tailwind CSS 4 · componentes no estilo shadcn/ui (Radix)
+frontend/   Next.js 15 (App Router) · identidade visual com as cores da bandeira do Maranhão · TypeScript · Tailwind CSS 4 · componentes no estilo shadcn/ui (Radix)
             TanStack Query · Recharts · Leaflet + OpenStreetMap
             /api/* é encaminhado ao back-end (mesmo domínio → cookie HttpOnly sem CORS)
 backend/    Spring Boot 3.5 · Java 21 · JDBC + Flyway · Spring Security (JWT em cookie HttpOnly) · PostgreSQL 16
@@ -132,6 +134,11 @@ Organização do back-end (`backend/src/main/java/br/slz/conecta`):
   habilidades precisam corresponder ao componente e ao ano da turma; reavaliação só após conclusão.
 - **Recomendações**: regras explícitas (dificuldade recorrente, identificada, queda, padrão entre turmas/escolas). Prioridade por
   pontos com justificativa exibida. Nenhuma obrigação é criada: o usuário aceita (gera plano) ou descarta com justificativa.
+- **Evasão**: estudantes com situação `ABANDONO` ÷ estudantes das turmas acompanhadas; quem saiu não tem resultado após a data de saída.
+- **Escassez de profissionais**: soma das vagas não preenchidas (necessários − lotados) no quadro da escola.
+- **Educação especial**: apenas contagens agregadas por escola (nenhuma marcação individual); cobertura = atendidos ÷ público.
+- **Notificações**: regras explícitas — evasão ≥ 15%, bairro ≥ 4 p.p. abaixo da média da rede, vagas abertas no quadro, cobertura de
+  atendimento da educação especial < 70%.
 - **Formação**: demanda = professor de turma com resultado abaixo do limiar na habilidade sem formação relacionada concluída ou em
   curso. Resultados de estudantes não avaliam professores.
 

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Inteligência territorial, diagnóstico educacional e planejamento pedagógico para a rede municipal de São Luís (demonstração).",
   icons: { icon: "/favicon.svg" },
 };
-export const viewport: Viewport = { themeColor: "#17407a", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#0f3b91", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

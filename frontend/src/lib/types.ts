@@ -272,3 +272,21 @@ export interface Curriculo {
   fonte: string;
   aviso: string;
 }
+
+// ---------------- painel de escolas (mapa) ----------------
+export interface DesempenhoEscola { indicador: Indicador; nota?: number; variacao?: number }
+export interface EscolaAnalise {
+  id: string; nome: string; bairro: string; territorioId: string; territorioNome: string; lat: number; lng: number; etapas: string;
+  evasao: { matriculados: number; abandonos: number; taxa?: number };
+  notas: DesempenhoEscola;
+  porMateria: Record<string, DesempenhoEscola>;
+  escassez: { necessarios: number; lotados: number; faltam: number; funcoes: { funcao: string; necessarios: number; lotados: number; faltam: number }[] };
+  inclusao?: { matriculasEscola: number; estudantesAee?: number; atendidosAee?: number; cobertura?: number; profissionaisApoio: number; salaRecursos: boolean; suprimido: boolean };
+}
+export interface Notificacao {
+  id: string; tipo: "EVASAO" | "DESEMPENHO" | "ESCASSEZ" | "INCLUSAO"; severidade: "ALTA" | "MEDIA" | "BAIXA";
+  titulo: string; detalhe: string; escolaId: string; escolaNome: string; bairro: string;
+}
+export interface PainelEscolas {
+  avaliacao: string; avaliacaoNome: string; rede: Record<string, number | null>; escolas: EscolaAnalise[]; notificacoes: Notificacao[]; aviso: string;
+}

@@ -25,6 +25,6 @@ public class EstudanteRepository {
     }
 
     public List<EstudanteRow> daTurma(String turmaId) {
-        return jdbc.query("SELECT id, codigo, nome, turma_id FROM estudante WHERE turma_id = ? ORDER BY nome", MAPPER, turmaId);
+        return jdbc.query("SELECT id, codigo, nome, turma_id FROM estudante WHERE turma_id = ? AND situacao = 'ATIVO' ORDER BY nome", MAPPER, turmaId);
     }
 }

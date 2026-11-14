@@ -9,9 +9,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/rede")
 public class RedeController {
     private final RedeService service;
+    private final PainelEscolasService painelEscolas;
 
-    public RedeController(RedeService service) {
+    public RedeController(RedeService service, PainelEscolasService painelEscolas) {
         this.service = service;
+        this.painelEscolas = painelEscolas;
+    }
+
+    /** Análises por escola (evasão, notas, matérias, quadro de profissionais, educação especial) e notificações. */
+    @GetMapping("/escolas")
+    public PainelEscolasService.Painel escolas(@RequestParam(required = false) Integer ano, @RequestParam(required = false) String avaliacaoId) {
+        return painelEscolas.painel(ano, b(avaliacaoId));
     }
 
     @GetMapping("/mapa")

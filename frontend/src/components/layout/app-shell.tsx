@@ -66,6 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="azulejo-pattern px-5 py-5">
         <Link href="/inicio" aria-label="Início"><Logo /></Link>
       </div>
+      <div className="faixas-ma h-[9px]" aria-hidden />
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 bg-azulejo-900">
         {navegacao(usuario).map(g => (
           <div key={g.grupo}>
@@ -77,9 +78,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <li key={i.href}>
                     <Link href={i.href} aria-current={a ? "page" : undefined}
                       className={cn("flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] transition-colors",
-                        a ? "bg-white/12 text-white font-medium" : "text-white/72 hover:bg-white/6 hover:text-white")}>
+                        a ? "bg-white text-azulejo-900 font-semibold" : "text-white/75 hover:bg-white/8 hover:text-white")}>
                       <i.icon size={17} />{i.label}
-                      {a && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-terracota-500" aria-hidden />}
+                      {a && <span className="ml-auto h-2 w-2 rounded-full bg-terracota-600" aria-hidden />}
                     </Link>
                   </li>
                 );
@@ -116,6 +117,7 @@ function Topbar({ usuario, onMenu }: { usuario: Usuario; onMenu: () => void }) {
   const [aberto, setAberto] = useState(false);
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur">
+      <div className="faixas-ma-h h-[3px] lg:hidden" aria-hidden />
       <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-3 px-4 md:px-8">
         <button className="lg:hidden rounded-md p-1.5 text-ink-2 hover:bg-canvas" onClick={onMenu} aria-label="Abrir menu"><Menu size={20} /></button>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-terracota-500/30 bg-terracota-50 px-2.5 py-1 text-[11.5px] font-semibold text-terracota-600">

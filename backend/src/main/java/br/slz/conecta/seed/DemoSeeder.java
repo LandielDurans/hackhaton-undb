@@ -90,7 +90,7 @@ public class DemoSeeder implements ApplicationRunner {
 
     record Turma(String id, String escolaId, String territorioId, int ano, String nome, String turno, double offset) {}
 
-    record Estudante(String id, String nome, String turmaId, double theta, Map<String, Double> ajusteGrupo) {}
+    record Estudante(String id, String nome, String turmaId, double theta, Map<String, Double> ajusteGrupo, LocalDate saida) {}
 
     record Hab(String id, String componenteId, int ano, String grupo, String descritorId) {}
 
@@ -145,6 +145,46 @@ public class DemoSeeder implements ApplicationRunner {
         criarPlanosDeTurma(candidatos);
         criarPlanosDaHistoria();
         criarParticipacoes();
+        criarQuadroEInclusao();
+    }
+
+    /** Quadro de profissionais e educação especial por escola (contagens agregadas, escola inteira). */
+    private void criarQuadroEInclusao() {
+        Random r = new Random(SEMENTE + 2);
+        // déficits demonstrativos: função -> vagas não preenchidas
+        Map<String, Map<String, Integer>> deficits = Map.of(
+                "E16", Map.of("Professor(a) de Matemática", 2, "Profissional de apoio (educação especial)", 1),
+                "E11", Map.of("Professor(a) dos anos iniciais", 2),
+                "E05", Map.of("Professor(a) de Língua Portuguesa", 1),
+                "E13", Map.of("Profissional de apoio (educação especial)", 1),
+                "E06", Map.of("Profissional de apoio (educação especial)", 2),
+                "E12", Map.of("Professor(a) dos anos iniciais", 1));
+        Map<String, Double> coberturaAee = Map.of("E06", 0.45, "E12", 0.58, "E13", 0.68);
+        for (String e : territorioDaEscola.keySet()) {
+            boolean finais = turmas.stream().anyMatch(t -> t.escolaId().equals(e) && t.ano() == 9);
+            int matriculas = 320 + r.nextInt(380);
+            int aee = (int) Math.round(matriculas * (0.03 + r.nextDouble() * 0.025));
+            double cob = coberturaAee.getOrDefault(e, 0.86 + r.nextDouble() * 0.14);
+            int atendidos = Math.min(aee, (int) Math.round(aee * cob));
+            Map<String, Integer> nec = new LinkedHashMap<>();
+            nec.put("Professor(a) dos anos iniciais", 8 + matriculas / 60);
+            if (finais) {
+                nec.put("Professor(a) de Matemática", 3 + r.nextInt(2));
+                nec.put("Professor(a) de Língua Portuguesa", 3 + r.nextInt(2));
+            }
+            nec.put("Profissional de apoio (educação especial)", Math.max(1, (int) Math.ceil(aee / 6.0)));
+            nec.put("Coordenação pedagógica", finais ? 2 : 1);
+            Map<String, Integer> def = deficits.getOrDefault(e, Map.of());
+            int apoioLotado = 0;
+            for (var en : nec.entrySet()) {
+                int lot = Math.max(0, en.getValue() - def.getOrDefault(en.getKey(), 0));
+                if (en.getKey().startsWith("Profissional de apoio")) apoioLotado = lot;
+                jdbc.update("INSERT INTO quadro_docente (escola_id, funcao, necessarios, lotados) VALUES (?,?,?,?)", e, en.getKey(), en.getValue(), lot);
+            }
+            jdbc.update("""
+                    INSERT INTO inclusao_escola (escola_id, matriculas_escola, estudantes_aee, atendidos_aee, profissionais_apoio, sala_recursos)
+                    VALUES (?,?,?,?,?,?)""", e, matriculas, aee, atendidos, apoioLotado, !coberturaAee.containsKey(e) || e.equals("E13"));
+        }
     }
 
     private void carregarReferencias() {
@@ -166,6 +206,8 @@ public class DemoSeeder implements ApplicationRunner {
             offsetEscola.put(escola, rng.nextGaussian() * 0.15);
             // Escola da jornada principal: desempenho geral próximo da média da rede, com dificuldade concentrada em frações.
             if (escola.equals("E04")) offsetEscola.put(escola, 0.30);
+            // Escola do Bequimão: desempenho abaixo da média da rede (notificação demonstrativa).
+            if (escola.equals("E09")) offsetEscola.put(escola, -0.45);
             boolean finais = jdbc.queryForObject("SELECT etapas FROM escola WHERE id = ?", String.class, escola).contains("finais");
             List<Object[]> defs = new ArrayList<>();
             defs.add(new Object[]{2, "A", "Matutino"});
@@ -214,6 +256,8 @@ public class DemoSeeder implements ApplicationRunner {
     private void criarEstudantes() {
         int seq = 0;
         List<Object[]> batch = new ArrayList<>();
+        // Sorteio de evasão com gerador próprio, para não alterar a sequência dos demais dados.
+        Random rngEvasao = new Random(SEMENTE + 1);
         for (Turma t : turmas) {
             int n = 20 + rng.nextInt(7);
             Set<String> nomes = new HashSet<>();
@@ -245,11 +289,28 @@ public class DemoSeeder implements ApplicationRunner {
                     } while (nomes.contains(nome) || nome.equals("Davi S.") || nome.equals("Lívia M.") || nome.equals("Caio R."));
                 }
                 nomes.add(nome);
-                estudantes.add(new Estudante(id, nome, t.id(), theta, ajuste));
-                batch.add(new Object[]{id, String.format("SLZ26-%05d", seq), nome, t.id()});
+                boolean historia = t.id().equals("E04-5A") && i < 3;
+                LocalDate saida = null;
+                if (!historia && rngEvasao.nextDouble() < probEvasao(t)) {
+                    saida = LocalDate.of(2026, 3, 23).plusDays(rngEvasao.nextInt(170));
+                } else rngEvasao.nextInt(170);
+                estudantes.add(new Estudante(id, nome, t.id(), theta, ajuste, saida));
+                batch.add(new Object[]{id, String.format("SLZ26-%05d", seq), nome, t.id(), saida == null ? "ATIVO" : "ABANDONO",
+                        saida == null ? null : Date.valueOf(saida)});
             }
         }
-        jdbc.batchUpdate("INSERT INTO estudante (id, codigo, nome, turma_id) VALUES (?,?,?,?)", batch);
+        jdbc.batchUpdate("INSERT INTO estudante (id, codigo, nome, turma_id, situacao, data_saida) VALUES (?,?,?,?,?,?)", batch);
+    }
+
+    /** Probabilidade de abandono por escola (demonstrativa): a escola do Centro tem um caso crítico. */
+    private static double probEvasao(Turma t) {
+        if (t.escolaId().equals("E01")) return 0.30;
+        return switch (t.territorioId()) {
+            case "TER-ITB" -> 0.08;
+            case "TER-COP" -> 0.07;
+            case "TER-COR" -> 0.06;
+            default -> 0.03;
+        };
     }
 
     private void criarUsuarios() {
@@ -312,6 +373,8 @@ public class DemoSeeder implements ApplicationRunner {
                 double p = 1.0 / (1.0 + Math.exp(-logit));
                 int acertos = 0;
                 for (int i = 0; i < itens; i++) if (rng.nextDouble() < p) acertos++;
+                // Estudante que abandonou antes da aplicação não tem resultado (o sorteio é mantido para a sequência).
+                if (e.saida() != null && !e.saida().isAfter(DATAS_AV[a])) continue;
                 resultados.put(e.id() + "|" + AVS[a] + "|" + h.id(), new int[]{acertos, itens});
             }
         }
