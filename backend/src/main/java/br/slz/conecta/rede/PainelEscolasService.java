@@ -51,8 +51,13 @@ public class PainelEscolasService {
 
     public record Desempenho(Indicador indicador, Double nota, Double variacao) {}
 
+    /** Porte pela matrícula total da escola: PEQUENA (< 200), MEDIA (200 a 1000), GRANDE (> 1000). */
+    public static String porte(int matriculas) {
+        return matriculas < 200 ? "PEQUENA" : matriculas > 1000 ? "GRANDE" : "MEDIA";
+    }
+
     public record EscolaAnalise(String id, String nome, String bairro, String territorioId, String territorioNome, double lat,
-                                double lng, String etapas, Evasao evasao, Desempenho notas, Map<String, Desempenho> porMateria,
+                                double lng, String etapas, int matriculasEscola, String porte, Evasao evasao, Desempenho notas, Map<String, Desempenho> porMateria,
                                 Escassez escassez, Inclusao inclusao) {}
 
     public record Notificacao(String id, String tipo, String severidade, String titulo, String detalhe, String escolaId,
@@ -92,8 +97,10 @@ public class PainelEscolasService {
         });
 
         Map<String, Inclusao> inclusao = new HashMap<>();
+        Map<String, Integer> matriculasEscola = new HashMap<>();
         jdbc.query("SELECT escola_id, matriculas_escola, estudantes_aee, atendidos_aee, profissionais_apoio, sala_recursos FROM inclusao_escola", rs -> {
             int aee = rs.getInt(3), at = rs.getInt(4);
+            matriculasEscola.put(rs.getString(1), rs.getInt(2));
             boolean sup = aee < minimo;
             inclusao.put(rs.getString(1), new Inclusao(rs.getInt(2), sup ? null : aee, sup ? null : at,
                     sup || aee == 0 ? null : CalculadoraIndicadores.arred(100.0 * at / aee), rs.getInt(5), rs.getBoolean(6), sup));
@@ -112,7 +119,7 @@ public class PainelEscolasService {
             Escassez esc = new Escassez(defs.stream().mapToInt(Deficit::necessarios).sum(), defs.stream().mapToInt(Deficit::lotados).sum(),
                     defs.stream().mapToInt(Deficit::faltam).sum(), defs.stream().filter(d -> d.faltam() > 0).toList());
             escolas.add(new EscolaAnalise(e.id(), e.nome(), e.bairro(), e.territorioId(), catalogo.territorio(e.territorioId()).nome(),
-                    e.lat(), e.lng(), e.etapas(),
+                    e.lat(), e.lng(), e.etapas(), matriculasEscola.getOrDefault(e.id(), 0), porte(matriculasEscola.getOrDefault(e.id(), 0)),
                     new Evasao(ev[0], ev[1], ev[0] == 0 ? null : CalculadoraIndicadores.arred(100.0 * ev[1] / ev[0])),
                     notas, porMateria, esc, inclusao.get(e.id())));
         }

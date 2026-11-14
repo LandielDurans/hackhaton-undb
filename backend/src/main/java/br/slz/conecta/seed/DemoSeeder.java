@@ -148,6 +148,10 @@ public class DemoSeeder implements ApplicationRunner {
         criarQuadroEInclusao();
     }
 
+    private static final Map<String, Integer> PORTE_MATRICULAS = Map.of(
+            "E02", 165, "E15", 185, "E17", 140,                 // pequenas
+            "E01", 1280, "E10", 1150, "E14", 1040, "E16", 1320); // grandes
+
     /** Quadro de profissionais e educação especial por escola (contagens agregadas, escola inteira). */
     private void criarQuadroEInclusao() {
         Random r = new Random(SEMENTE + 2);
@@ -163,6 +167,8 @@ public class DemoSeeder implements ApplicationRunner {
         for (String e : territorioDaEscola.keySet()) {
             boolean finais = turmas.stream().anyMatch(t -> t.escolaId().equals(e) && t.ano() == 9);
             int matriculas = 320 + r.nextInt(380);
+            // porte demonstrativo: algumas escolas pequenas (< 200) e grandes (> 1000)
+            matriculas = PORTE_MATRICULAS.getOrDefault(e, matriculas);
             int aee = (int) Math.round(matriculas * (0.03 + r.nextDouble() * 0.025));
             double cob = coberturaAee.getOrDefault(e, 0.86 + r.nextDouble() * 0.14);
             int atendidos = Math.min(aee, (int) Math.round(aee * cob));

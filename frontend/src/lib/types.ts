@@ -277,6 +277,7 @@ export interface Curriculo {
 export interface DesempenhoEscola { indicador: Indicador; nota?: number; variacao?: number }
 export interface EscolaAnalise {
   id: string; nome: string; bairro: string; territorioId: string; territorioNome: string; lat: number; lng: number; etapas: string;
+  matriculasEscola: number; porte: "PEQUENA" | "MEDIA" | "GRANDE";
   evasao: { matriculados: number; abandonos: number; taxa?: number };
   notas: DesempenhoEscola;
   porMateria: Record<string, DesempenhoEscola>;

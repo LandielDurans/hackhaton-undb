@@ -66,6 +66,19 @@ class PainelEscolasTest {
     }
 
     @Test
+    void porteSegueAMatriculaTotalDaEscola() throws Exception {
+        JsonNode p = painel();
+        for (JsonNode e : p.get("escolas")) {
+            int m = e.get("matriculasEscola").asInt();
+            String esperado = m < 200 ? "PEQUENA" : m > 1000 ? "GRANDE" : "MEDIA";
+            assertThat(e.get("porte").asText()).as(e.get("id").asText()).isEqualTo(esperado);
+        }
+        assertThat(escola(p, "E17").get("porte").asText()).isEqualTo("PEQUENA");
+        assertThat(escola(p, "E16").get("porte").asText()).isEqualTo("GRANDE");
+        assertThat(escola(p, "E04").get("porte").asText()).isEqualTo("MEDIA");
+    }
+
+    @Test
     void notificacoesSaoGeradasPorRegrasSobreOsDados() throws Exception {
         List<String> titulos = new ArrayList<>();
         painel().get("notificacoes").forEach(n -> titulos.add(n.get("titulo").asText()));

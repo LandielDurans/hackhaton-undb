@@ -7,6 +7,7 @@ import type { Feature, FeatureCollection } from "geojson";
 import type { EscolaAnalise, Usuario } from "@/lib/types";
 import { COR_FAIXA, faixaAnalise, valorAnalise, type Analise } from "@/lib/analises";
 import type { Faixa } from "@/lib/calor";
+import { iconeEscola, PORTE_ROTULO, type Porte } from "@/lib/icones-escola";
 
 const CENTRO: [number, number] = [-2.545, -44.262];
 const TINTA = "#081f55";      // traço "caneta" do esboço
@@ -14,7 +15,7 @@ const PAPEL = "#fbfaf6";
 
 /** Bairros sempre rotulados (como no esboço) e demais a partir do zoom 13. */
 const BAIRROS_FIXOS: { nome: string; pos: [number, number]; destaque?: boolean; desloc?: string }[] = [
-  { nome: "CENTRO", pos: [-2.5318, -44.2985], destaque: true, desloc: "translate(-135%, -230%)" },
+  { nome: "CENTRO", pos: [-2.5318, -44.2985], destaque: true, desloc: "translate(-165%, -260%)" },
   { nome: "TURU", pos: [-2.5128, -44.2160], destaque: true },
   { nome: "ANJO DA GUARDA", pos: [-2.5545, -44.3355] },
   { nome: "COHAB", pos: [-2.5375, -44.2125] },
@@ -71,17 +72,14 @@ function useZoom() {
   return z;
 }
 
-function cubo(cor: string, selecionada: boolean) {
-  const t = selecionada ? 40 : 30;
-  const svg = `<svg width="${t}" height="${t}" viewBox="0 0 30 30" class="cubo-escola${selecionada ? " selecionada" : ""}">
-    <path d="M15 3 27 9 15 15 3 9Z" fill="color-mix(in srgb, ${cor} 45%, white)" stroke="${TINTA}" stroke-width="1.4" stroke-linejoin="round"/>
-    <path d="M3 9 15 15 15 28 3 22Z" fill="${cor}" stroke="${TINTA}" stroke-width="1.4" stroke-linejoin="round"/>
-    <path d="M27 9 15 15 15 28 27 22Z" fill="color-mix(in srgb, ${cor} 72%, black)" stroke="${TINTA}" stroke-width="1.4" stroke-linejoin="round"/>
-  </svg>`;
+function iconeLeaflet(porte: Porte, cor: string, selecionada: boolean) {
+  const ic = iconeEscola(porte, cor, selecionada);
+  const [ax, ay] = ic.ancora;
+  const pulso = selecionada ? `<span class="pulso-escola" style="left:${ax - 22}px;top:${ay - 10}px"></span>` : "";
   return L.divIcon({
     className: "",
-    html: `<div style="position:relative;width:${t}px;height:${t}px">${selecionada ? '<span class="pulso-escola"></span>' : ""}${svg}</div>`,
-    iconSize: [t, t], iconAnchor: [t / 2, t * 0.7], popupAnchor: [0, -t * 0.6],
+    html: `<div class="marcador-escola" style="position:relative;width:${ic.largura}px;height:${ic.altura}px">${pulso}${ic.html}</div>`,
+    iconSize: [ic.largura, ic.altura], iconAnchor: [ax, ay], popupAnchor: [0, -ic.altura * 0.75], tooltipAnchor: [0, -ic.altura * 0.6],
   });
 }
 
@@ -242,13 +240,13 @@ export default function MapaIlustrado({ escolas, analise, materia, criterios, se
           const f = faixas.get(e.id) as Faixa;
           const sel = e.id === selecionada;
           return (
-            <Marker key={e.id} position={[e.lat, e.lng]} icon={cubo(COR_FAIXA[f], sel)} zIndexOffset={sel ? 1000 : 0}
+            <Marker key={e.id} position={[e.lat, e.lng]} icon={iconeLeaflet(e.porte, COR_FAIXA[f], sel)} zIndexOffset={sel ? 1000 : 0}
               eventHandlers={{ click: () => onSelecionar(e.id) }} title={e.nome}>
-              <Tooltip direction="top" offset={[0, -14]}>{e.nome} · {valorAnalise(e, analise, materia)}</Tooltip>
+              <Tooltip direction="top">{e.nome} · {valorAnalise(e, analise, materia)}</Tooltip>
               <Popup>
                 <div className="min-w-[210px] text-[13px]">
                   <p className="font-semibold text-[14px]">{e.nome}</p>
-                  <p className="text-xs text-ink-3">{e.bairro} · escola fictícia</p>
+                  <p className="text-xs text-ink-3">{e.bairro} · {PORTE_ROTULO[e.porte].split(" · ")[0].toLowerCase()} ({e.matriculasEscola.toLocaleString("pt-BR")} estudantes) · fictícia</p>
                   <p className="mt-2 inline-flex items-center gap-1.5 font-semibold"><span className="h-3 w-3 rounded-full" style={{ background: COR_FAIXA[f] }} />{valorAnalise(e, analise, materia)}</p>
                   {podeAbrir(e.id)
                     ? <Link href={`/escolas/${e.id}`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-azulejo-700 px-3 py-2 text-[13px] font-medium !text-white hover:bg-azulejo-600">Abrir escola</Link>
