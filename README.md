@@ -69,8 +69,9 @@ Senha de todos: `demo123` (configurável). A tela de entrada lista os perfis; o 
 
 1. **Gestão regional** — entre como *Rosângela (SEMED)*. O **Mapa da rede** segue o esboço da equipe: cinco análises no topo
    (Evasão, Desempenho por notas, Desempenho por matéria, Escassez de professores, Educação especial), seletores de escola, ano e
-   matéria, o mapa ilustrado da ilha (contorno e avenidas do OpenStreetMap, rodoviária e aeroporto) com escolas em cubos e focos de
-   calor vermelho/amarelo/azul/verde, e o painel **NOTIFICAÇÕES** ("Escola do Centro está com 32% de evasão!", "A escola do Turu
+   matéria, o mapa ilustrado da ilha (cartografia do OpenStreetMap redesenhada no traço do esboço: avenidas em hierarquia com nomes,
+   rios Anil e Bacanga, Lagoa da Jansen, mangues em zigue-zague, parques, praias, pista do aeroporto, rodoviária, rosa dos ventos e
+   escala) com escolas em cubos e focos de calor vermelho/amarelo/azul/verde, e o painel **NOTIFICAÇÕES** ("Escola do Centro está com 32% de evasão!", "A escola do Turu
    precisa de profissionais!", "O desempenho dos alunos no Bequimão está abaixo da média."). Clique numa notificação para focar a escola.
 2. **Escola** — clique na *EM Mangue Vivo* (Anjo da Guarda) → *Abrir diagnóstico*. Veja turmas, habilidades mais baixas, plano
    escolar vinculado ao plano territorial e recomendações (“Turmas do 5º ano com dificuldade em frações”).
@@ -150,6 +151,11 @@ Organização do back-end (`backend/src/main/java/br/slz/conecta`):
   Textos de planos e reavaliações são escritos a partir dos números efetivamente gerados.
 - Códigos e textos das habilidades seguem a BNCC (MEC, 2018); o alinhamento com a Proposta Curricular de São Luís **não** foi
   verificado. Descritores e mapeamentos são demonstrativos.
+
+## Cartografia
+
+As camadas do mapa ilustrado ficam em `frontend/public/geo/` (GeoJSON simplificado, baixado do OpenStreetMap via Overpass,
+© colaboradores do OpenStreetMap, licença ODbL). Funcionam sem internet; o modo “Ruas” usa os tiles online do OpenStreetMap.
 
 ## Limitações conhecidas
 
