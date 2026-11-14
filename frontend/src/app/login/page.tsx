@@ -44,7 +44,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-[1.05fr_1fr]">
       <section className="azulejo-pattern relative flex flex-col justify-between p-8 md:p-12 md:pl-16 text-white overflow-hidden bg-cover bg-center"
-        style={{ backgroundImage: "linear-gradient(90deg, rgb(8 28 51 / 0.95) 0%, rgb(13 43 74 / 0.82) 55%, rgb(13 43 74 / 0.45) 100%), url(/fotos/centro-historico.jpg)" }}>
+        style={{ backgroundImage: "linear-gradient(90deg, rgb(8 28 51 / 0.92) 0%, rgb(13 43 74 / 0.68) 50%, rgb(13 43 74 / 0.2) 100%), url(/fotos/centro-historico.jpg)" }}>
         <div className="faixa-slz-v absolute inset-y-0 left-0 w-2 md:w-3" aria-hidden />
         <div className="pointer-events-none absolute -right-20 -bottom-20 opacity-[0.10]" aria-hidden><LogoMark size={380} centro="#0d2b4a" /></div>
         <div className="flex items-start justify-between gap-4">

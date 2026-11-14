@@ -9,6 +9,18 @@ Projeto para o Hackathon São Luís do Futuro — Desafio 6 (SEMED): *Integraç�
 ⚠️ **Demonstração com dados fictícios.** Escolas, professores, estudantes e resultados são gerados de forma determinística.
 Não há acesso a dados reais da SEMED nem integração com o SIMAE.
 
+## Design e identidade visual
+
+🎨 **Figma:** [Conecta Educação São Luís · Identidade Visual](https://www.figma.com/design/pyPbkBl0mza6dTwONBSfaR)
+
+- **00 · Identidade & Apresentação** — apresentação da marca (conceito, símbolo, cores, tipografia, aplicações).
+- **01 · Tokens & Componentes** — variáveis de cor e estilos de texto usados no front-end (`frontend/src/app/globals.css`).
+- **02 · Protótipo (telas)** — 9 telas de referência da jornada da demo, navegáveis no modo apresentação.
+
+Identidade baseada na marca e no site da Prefeitura de São Luís: Azul São Luís `#2071B7`, Azul Profundo `#0D2B4A`,
+Azul Azulejo `#39A6DE`, Verde Babaçu `#A8C048`, Amarelo Sol `#F2C230` e Telha `#D9573F`; fontes Poppins (títulos) e Inter
+(interface); fotos reais da cidade (Wikimedia Commons, licenças livres).
+
 ---
 
 ## Executar
@@ -92,7 +104,7 @@ Senha de todos: `demo123` (configurável). A tela de entrada lista os perfis; o 
 ## Arquitetura
 
 ```
-frontend/   Next.js 15 (App Router) · identidade visual com as cores da bandeira do Maranhão · TypeScript · Tailwind CSS 4 · componentes no estilo shadcn/ui (Radix)
+frontend/   Next.js 15 (App Router) · identidade visual com as cores da Prefeitura de São Luís · TypeScript · Tailwind CSS 4 · componentes no estilo shadcn/ui (Radix)
             TanStack Query · Recharts · Leaflet + OpenStreetMap
             /api/* é encaminhado ao back-end (mesmo domínio → cookie HttpOnly sem CORS)
 backend/    Spring Boot 3.5 · Java 21 · JDBC + Flyway · Spring Security (JWT em cookie HttpOnly) · PostgreSQL 16
