@@ -4,10 +4,10 @@ import type { EscolaMapa, TerritorioMapa } from "./types";
 export type Faixa = "vermelho" | "amarelo" | "azul" | "verde" | "sem";
 
 export const COR_FAIXA: Record<Faixa, string> = {
-  vermelho: "#dc2626",
-  amarelo: "#d4a106",
-  azul: "#2563eb",
-  verde: "#16a34a",
+  vermelho: "#d9573f",
+  amarelo: "#e0aa12",
+  azul: "#2071b7",
+  verde: "#7fa52f",
   sem: "#a3a8b0",
 };
 

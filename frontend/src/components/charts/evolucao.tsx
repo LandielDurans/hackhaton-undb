@@ -3,7 +3,7 @@ import { CartesianGrid, Legend, Line, LineChart, ReferenceLine, ResponsiveContai
 import { pct } from "@/lib/format";
 
 /** Paleta categórica validada (slots 1–3, válidos em todos os pares). */
-export const SERIES = ["#2a78d6", "#eb6834", "#1baf7a"];
+export const SERIES = ["#2071b7", "#39a6de", "#a8c048"];
 
 export interface SerieEvolucao {
   nome: string;
@@ -25,14 +25,14 @@ export function EvolucaoChart({ series, criterios, altura = 220, rotuloY = "% de
       <div style={{ height: altura }} role="img" aria-label={`Evolução (${rotuloY}): ` + series.map(s => `${s.nome}: ${s.pontos.map(p => `${p.sigla} ${pct(p.valor)}`).join(", ")}`).join("; ")}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 10, right: 16, bottom: 0, left: -12 }}>
-            <CartesianGrid stroke="#e8ecf1" vertical={false} />
-            <XAxis dataKey="sigla" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={{ stroke: "#cfd7e2" }} tickLine={false} />
-            <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} unit="%" />
-            <ReferenceLine y={criterios.adequado} stroke="#1f8a70" strokeDasharray="4 4" />
-            <ReferenceLine y={criterios.atencao} stroke="#c2410c" strokeDasharray="4 4" />
+            <CartesianGrid stroke="#ece7dc" vertical={false} />
+            <XAxis dataKey="sigla" tick={{ fontSize: 12, fill: "#5b6675" }} axisLine={{ stroke: "#d3ccbc" }} tickLine={false} />
+            <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={{ fontSize: 11, fill: "#5b6675" }} axisLine={false} tickLine={false} unit="%" />
+            <ReferenceLine y={criterios.adequado} stroke="#5e8c1f" strokeDasharray="4 4" />
+            <ReferenceLine y={criterios.atencao} stroke="#c0462f" strokeDasharray="4 4" />
             <Tooltip
               formatter={(v) => (typeof v === "number" ? pct(v) : "sem dado")}
-              contentStyle={{ borderRadius: 10, border: "1px solid #e2e7ee", fontSize: 12 }}
+              contentStyle={{ borderRadius: 10, border: "1px solid #e4dfd3", fontSize: 12 }}
               cursor={{ stroke: "#94a3b8", strokeDasharray: "3 3" }}
             />
             {multi && <Legend wrapperStyle={{ fontSize: 12 }} iconType="plainline" />}

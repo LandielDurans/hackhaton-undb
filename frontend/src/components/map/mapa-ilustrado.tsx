@@ -10,8 +10,8 @@ import type { Faixa } from "@/lib/calor";
 import { iconeEscola, PORTE_ROTULO, type Porte } from "@/lib/icones-escola";
 
 const CENTRO: [number, number] = [-2.545, -44.262];
-const TINTA = "#081f55";      // traço "caneta" do esboço
-const PAPEL = "#fbfaf6";
+const TINTA = "#0d2b4a";      // traço "caneta" do esboço
+const PAPEL = "#f5f2ea";
 
 /** Bairros sempre rotulados (como no esboço) e demais a partir do zoom 13. */
 const BAIRROS_FIXOS: { nome: string; pos: [number, number]; destaque?: boolean; desloc?: string }[] = [
@@ -136,7 +136,7 @@ function Cartografia({ c, rotulosVias, bairros }: { c: Camadas; rotulosVias: Rot
         {c.mangue && <GeoJSON data={c.mangue} interactive={false} style={{ color: TINTA, weight: 1, opacity: 0.5, fillColor: "#e7efe0", fillOpacity: 1, className: "fill-mangue" }} />}
       </Pane>
       <Pane name="agua" style={{ zIndex: 330 }}>
-        {c.agua && <GeoJSON data={c.agua} interactive={false} style={{ color: TINTA, weight: 1.6, fillColor: "#e6edf8", fillOpacity: 1, className: "fill-agua" }} />}
+        {c.agua && <GeoJSON data={c.agua} interactive={false} style={{ color: TINTA, weight: 1.6, fillColor: "#e8f1f8", fillOpacity: 1, className: "fill-agua" }} />}
       </Pane>
       <Pane name="rios" style={{ zIndex: 332 }}>
         {c.rios && <GeoJSON key={"rios" + zb} data={c.rios} interactive={false}
@@ -177,10 +177,10 @@ function PadroesSvg() {
     <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden>
       <defs>
         <pattern id="hachura-agua" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <rect width="12" height="12" fill="#e6edf8" /><line x1="0" y1="0" x2="0" y2="12" stroke="#0f3b91" strokeOpacity="0.28" strokeWidth="1.6" />
+          <rect width="12" height="12" fill="#e8f1f8" /><line x1="0" y1="0" x2="0" y2="12" stroke="#2071b7" strokeOpacity="0.28" strokeWidth="1.6" />
         </pattern>
         <pattern id="zigue-mangue" width="10" height="8" patternUnits="userSpaceOnUse">
-          <rect width="10" height="8" fill="#e5efdc" /><path d="M0 6 L2.5 1.5 L5 6 L7.5 1.5 L10 6" fill="none" stroke="#081f55" strokeOpacity="0.55" strokeWidth="1" />
+          <rect width="10" height="8" fill="#e5efdc" /><path d="M0 6 L2.5 1.5 L5 6 L7.5 1.5 L10 6" fill="none" stroke="#0d2b4a" strokeOpacity="0.55" strokeWidth="1" />
         </pattern>
         <pattern id="pontos-mata" width="9" height="9" patternUnits="userSpaceOnUse">
           <rect width="9" height="9" fill="#d6e7cc" /><circle cx="2.5" cy="2.5" r="1.3" fill="#4f7f43" fillOpacity="0.55" /><circle cx="7" cy="6.8" r="1.1" fill="#4f7f43" fillOpacity="0.45" />
@@ -259,10 +259,10 @@ export default function MapaIlustrado({ escolas, analise, materia, criterios, se
       </MapContainer>
       {!detalhado && (
         <svg className="pointer-events-none absolute bottom-12 right-4 z-[450] h-16 w-16 drop-shadow" viewBox="0 0 64 64" aria-label="Norte">
-          <circle cx="32" cy="34" r="20" fill="#fbfaf6" stroke="#081f55" strokeWidth="1.6" />
-          <path d="M32 14 38 34 32 31 26 34Z" fill="#c8102e" stroke="#081f55" strokeWidth="1.2" strokeLinejoin="round" />
-          <path d="M32 54 26 34 32 37 38 34Z" fill="#fbfaf6" stroke="#081f55" strokeWidth="1.2" strokeLinejoin="round" />
-          <text x="32" y="10" textAnchor="middle" fontSize="10" fontWeight="800" fill="#081f55" fontFamily="sans-serif">N</text>
+          <circle cx="32" cy="34" r="20" fill="#f5f2ea" stroke="#0d2b4a" strokeWidth="1.6" />
+          <path d="M32 14 38 34 32 31 26 34Z" fill="#d9573f" stroke="#0d2b4a" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M32 54 26 34 32 37 38 34Z" fill="#f5f2ea" stroke="#0d2b4a" strokeWidth="1.2" strokeLinejoin="round" />
+          <text x="32" y="10" textAnchor="middle" fontSize="10" fontWeight="800" fill="#0d2b4a" fontFamily="sans-serif">N</text>
         </svg>
       )}
     </>

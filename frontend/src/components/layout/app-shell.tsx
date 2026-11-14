@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/format";
 import type { Usuario } from "@/lib/types";
-import { Logo } from "./logo";
+import { Logo, LogoPrefeitura } from "./logo";
 import { PageLoading } from "@/components/ui/states";
 
 interface Item { href: string; label: string; icon: React.ComponentType<{ size?: number }>; match?: string }
@@ -63,10 +63,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const sidebar = (
     <nav aria-label="Navegação principal" className="flex h-full flex-col">
-      <div className="azulejo-pattern px-5 py-5">
+      <div className="bg-azulejo-900 px-5 py-5">
         <Link href="/inicio" aria-label="Início"><Logo /></Link>
       </div>
-      <div className="faixas-ma h-[9px]" aria-hidden />
+      <div className="faixa-slz h-[5px]" aria-hidden />
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 bg-azulejo-900">
         {navegacao(usuario).map(g => (
           <div key={g.grupo}>
@@ -78,9 +78,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <li key={i.href}>
                     <Link href={i.href} aria-current={a ? "page" : undefined}
                       className={cn("flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] transition-colors",
-                        a ? "bg-white text-azulejo-900 font-semibold" : "text-white/75 hover:bg-white/8 hover:text-white")}>
+                        a ? "bg-azulejo-500 text-white font-semibold shadow-[inset_3px_0_0_var(--color-sol)]" : "text-white/75 hover:bg-white/8 hover:text-white")}>
                       <i.icon size={17} />{i.label}
-                      {a && <span className="ml-auto h-2 w-2 rounded-full bg-terracota-600" aria-hidden />}
+                      {a && <span className="ml-auto h-2 w-2 rounded-full bg-sol" aria-hidden />}
                     </Link>
                   </li>
                 );
@@ -90,7 +90,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         ))}
       </div>
       <div className="bg-azulejo-900 border-t border-white/10 px-5 py-3 text-[11px] leading-snug text-white/50">
-        Hackathon São Luís do Futuro · Desafio 6<br />Dados demonstrativos e fictícios
+        <LogoPrefeitura altura={52} className="mb-2.5" />
+        Hackathon São Luís do Futuro · Desafio 6 · SEMED<br />Dados demonstrativos e fictícios
+        <div className="faixa-slz-h mt-3 h-[3px] rounded-full" aria-hidden />
       </div>
     </nav>
   );
@@ -117,16 +119,16 @@ function Topbar({ usuario, onMenu }: { usuario: Usuario; onMenu: () => void }) {
   const [aberto, setAberto] = useState(false);
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur">
-      <div className="faixas-ma-h h-[3px] lg:hidden" aria-hidden />
+      <div className="faixa-slz-h h-[3px] lg:hidden" aria-hidden />
       <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-3 px-4 md:px-8">
         <button className="lg:hidden rounded-md p-1.5 text-ink-2 hover:bg-canvas" onClick={onMenu} aria-label="Abrir menu"><Menu size={20} /></button>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-terracota-500/30 bg-terracota-50 px-2.5 py-1 text-[11.5px] font-semibold text-terracota-600">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-sol/60 bg-sol/20 px-2.5 py-1 text-[11.5px] font-semibold text-desenvolvimento-ink">
           <FlaskConical size={13} aria-hidden />DEMONSTRATIVO<span className="hidden sm:inline"> · dados fictícios</span>
         </span>
         <div className="ml-auto relative">
           <button onClick={() => setAberto(!aberto)} aria-expanded={aberto} aria-haspopup="menu"
             className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-canvas">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-azulejo-700 text-xs font-bold text-white" aria-hidden>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-azulejo-500 text-xs font-bold text-white" aria-hidden>
               {usuario.nome.split(" ").map(p => p[0]).slice(0, 2).join("")}
             </span>
             <span className="hidden sm:block text-left leading-tight">
