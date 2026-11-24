@@ -98,6 +98,23 @@ h1, h2, h3, .font-display {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M31 31A11 11 0 0 0 20 20A11 11 0 0 0 31 31Z'/%3E%3Cpath d='M33 31A11 11 0 0 1 44 20A11 11 0 0 1 33 31Z'/%3E%3Cpath d='M31 33A11 11 0 0 1 20 44A11 11 0 0 1 31 33Z'/%3E%3Cpath d='M33 33A11 11 0 0 0 44 44A11 11 0 0 0 33 33Z'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='2.2' fill='%23ffffff' fill-opacity='0.09'/%3E%3C/svg%3E");
 }
 
+/* ---------------- Azulejo português das fachadas do Centro Histórico ----------------
+   Ladrilho 80×80 que se encaixa com os vizinhos: os quartos de círculo dos cantos e os
+   meios-círculos das bordas formam rosetas completas entre ladrilhos, como nos casarões. */
+.azulejo-barrado {
+  background-color: #f7fafd;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23f7fafd'/%3E%3Cpath d='M40 9L71 40L40 71L9 40Z' fill='none' stroke='%23a9cbe8' stroke-width='1.6'/%3E%3Cg fill='%232071b7'%3E%3Ccircle r='17'/%3E%3Ccircle cx='80' r='17'/%3E%3Ccircle cy='80' r='17'/%3E%3Ccircle cx='80' cy='80' r='17'/%3E%3C/g%3E%3Cg fill='%23f7fafd'%3E%3Ccircle r='11'/%3E%3Ccircle cx='80' r='11'/%3E%3Ccircle cy='80' r='11'/%3E%3Ccircle cx='80' cy='80' r='11'/%3E%3C/g%3E%3Cg fill='%230d2b4a'%3E%3Ccircle r='5'/%3E%3Ccircle cx='80' r='5'/%3E%3Ccircle cy='80' r='5'/%3E%3Ccircle cx='80' cy='80' r='5'/%3E%3C/g%3E%3Cg fill='%2339a6de'%3E%3Ccircle cx='40' r='6'/%3E%3Ccircle cx='40' cy='80' r='6'/%3E%3Ccircle cy='40' r='6'/%3E%3Ccircle cx='80' cy='40' r='6'/%3E%3C/g%3E%3Cg fill='%232071b7'%3E%3Cellipse cx='40' cy='26' rx='6' ry='11'/%3E%3Cellipse cx='40' cy='54' rx='6' ry='11'/%3E%3Cellipse cx='26' cy='40' rx='11' ry='6'/%3E%3Cellipse cx='54' cy='40' rx='11' ry='6'/%3E%3C/g%3E%3Cg fill='%2339a6de' transform='rotate(45 40 40)'%3E%3Cellipse cx='40' cy='28' rx='3' ry='6'/%3E%3Cellipse cx='40' cy='52' rx='3' ry='6'/%3E%3Cellipse cx='28' cy='40' rx='6' ry='3'/%3E%3Cellipse cx='52' cy='40' rx='6' ry='3'/%3E%3C/g%3E%3Ccircle cx='40' cy='40' r='5.5' fill='%230d2b4a'/%3E%3Ccircle cx='40' cy='40' r='2.2' fill='%23f2c230'/%3E%3Crect x='.5' y='.5' width='79' height='79' fill='none' stroke='%23d6e7f5'/%3E%3C/svg%3E");
+  background-size: 40px 40px;
+}
+.azulejo-barrado-lg { background-size: 72px 72px; }
+
+/* Mesmo desenho, só em contorno e bem claro: textura de fundo da área interna */
+.azulejo-fundo {
+  background-color: var(--color-canvas);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%232071b7' stroke-opacity='0.07' stroke-width='1.4'%3E%3Cpath d='M40 9L71 40L40 71L9 40Z'/%3E%3Ccircle r='14'/%3E%3Ccircle cx='80' r='14'/%3E%3Ccircle cy='80' r='14'/%3E%3Ccircle cx='80' cy='80' r='14'/%3E%3Cellipse cx='40' cy='26' rx='6' ry='11'/%3E%3Cellipse cx='40' cy='54' rx='6' ry='11'/%3E%3Cellipse cx='26' cy='40' rx='11' ry='6'/%3E%3Cellipse cx='54' cy='40' rx='11' ry='6'/%3E%3C/g%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
 /* Véu sobre foto real de São Luís */
 .veu-foto { background: linear-gradient(90deg, rgb(8 28 51 / 0.94) 0%, rgb(13 43 74 / 0.72) 55%, rgb(13 43 74 / 0.2) 100%); }
 .veu-foto-v { background: linear-gradient(180deg, rgb(8 28 51 / 0.35) 0%, rgb(13 43 74 / 0.75) 55%, rgb(8 28 51 / 0.96) 100%); }

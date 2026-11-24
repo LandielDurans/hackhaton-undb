@@ -13,6 +13,7 @@ import { cn } from "@/lib/format";
 import { svgIconeEscola, PORTE_ROTULO, type Porte } from "@/lib/icones-escola";
 import type { EscolaAnalise, Notificacao, PainelEscolas } from "@/lib/types";
 import { ErrorState, PageLoading, Skeleton } from "@/components/ui/states";
+import { BannerSaoLuis } from "@/components/layout/banner";
 
 const MapaIlustrado = dynamic(() => import("@/components/map/mapa-ilustrado"), { ssr: false, loading: () => <Skeleton className="h-[620px] w-full rounded-none" /> });
 
@@ -54,15 +55,15 @@ function Rede() {
 
   return (
     <div>
-      {/* Cabeçalho oculto temporariamente
-      <section className="relative mb-4 overflow-hidden rounded-2xl bg-azulejo-900 bg-cover bg-center px-6 py-5 text-white"
-        style={{ backgroundImage: "linear-gradient(90deg, rgb(8 28 51 / 0.94) 0%, rgb(13 43 74 / 0.75) 55%, rgb(13 43 74 / 0.2) 100%), url(/fotos/palacio-dos-leoes.jpg)", backgroundPosition: "center 40%" }}>
-        <p className="text-[11px] font-semibold tracking-[0.16em] text-sol">NÍVEL 1 · INTELIGÊNCIA REGIONAL</p>
-        <h1 className="mt-1 text-[22px] md:text-[28px] font-bold leading-tight">Onde estão os desafios da educação municipal?</h1>
-        <p className="mt-1 text-[13px] text-white/80">São Luís · 7 núcleos territoriais · 256 escolas da rede municipal</p>
-        <div className="faixa-slz-h absolute inset-x-0 bottom-0 h-[4px]" aria-hidden />
-      </section>
-      */}
+      <BannerSaoLuis
+        compacto
+        foto="/fotos/palacio-dos-leoes.jpg"
+        posicaoFoto="center 40%"
+        credito="Palácio dos Leões · Wikimedia Commons (CC0)"
+        eyebrow="Análise regional · Inteligência territorial"
+        titulo="Onde estão os desafios da educação em São Luís?"
+        descricao={`São Luís do Maranhão · ${meta.data!.territorios.length} núcleos territoriais · ${painel.data?.escolas.length ?? "—"} escolas da rede municipal`}
+      />
 
       {/* Cartões de análise */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5" role="tablist" aria-label="Análises do mapa">
