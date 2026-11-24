@@ -8,6 +8,7 @@ import { useMeta } from "@/lib/queries";
 import { useAuth } from "@/lib/auth";
 import type { PainelEscolas } from "@/lib/types";
 import { ErrorState, PageLoading } from "@/components/ui/states";
+import { BannerSaoLuis } from "@/components/layout/banner";
 import { cn } from "@/lib/format";
 
 export default function EscolasIndicePage() {
@@ -48,29 +49,30 @@ export default function EscolasIndicePage() {
   return (
     <div className="space-y-6">
       {/* Cabeçalho */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-azulejo-700">
-            Visão Unidade Escolar
-          </p>
-          <h1 className="text-2xl font-bold text-ink mt-1">Análise por Escola</h1>
-          <p className="text-sm text-ink-2 mt-1">
+      <BannerSaoLuis
+        foto="/fotos/centro-historico.jpg"
+        posicaoFoto="center 55%"
+        credito="Centro Histórico · JLPizzol, Wikimedia Commons (CC BY-SA 4.0)"
+        eyebrow="Visão unidade escolar"
+        titulo="Análise por Escola"
+        descricao={
+          <>
             Consulte médias dos alunos, frequência, quadro docente e planos pedagógicos das{" "}
-            <strong className="font-semibold text-ink">{painel.data?.escolas.length ?? 256} unidades</strong> da rede municipal.
-          </p>
-        </div>
-
+            <strong className="font-semibold text-white">{painel.data?.escolas.length ?? 256} unidades</strong> da rede municipal de São Luís.
+          </>
+        }
+      >
         {usuario.escolaId && (
           <Link
             href={`/escolas/${usuario.escolaId}`}
-            className="inline-flex items-center gap-2 rounded-xl bg-azulejo-700 px-4 py-2.5 text-[13.5px] font-semibold text-white shadow-sm hover:bg-azulejo-600"
+            className="inline-flex items-center gap-2 rounded-xl bg-sol px-4 py-2.5 text-[13.5px] font-semibold text-azulejo-900 shadow-sm hover:brightness-105"
           >
             <School size={16} />
             Abrir minha escola ({usuario.escolaNome || usuario.escolaId})
             <ArrowRight size={15} />
           </Link>
         )}
-      </div>
+      </BannerSaoLuis>
 
       {/* Filtros de busca e núcleo */}
       <div className="grid gap-3 rounded-2xl border border-line bg-surface p-4 sm:grid-cols-3">

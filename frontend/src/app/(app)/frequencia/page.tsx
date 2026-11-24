@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import type { PainelEscolas } from "@/lib/types";
 import { ErrorState, PageLoading } from "@/components/ui/states";
+import { BannerSaoLuis } from "@/components/layout/banner";
 import { cn } from "@/lib/format";
 
 interface AlunoChamada {
@@ -122,22 +123,17 @@ export default function FrequenciaPage() {
 
   return (
     <div className="space-y-6">
-      {/* Cabeçalho */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-azulejo-700">
-            Integração GEDUC · Inclusão Docente e Busca Ativa
-          </p>
-          <h1 className="text-2xl font-bold text-ink mt-1">Marcação de Frequência</h1>
-          <p className="text-sm text-ink-2 mt-1">
-            Registre a chamada digitalmente ou envie uma foto da folha de presença manuscrita para leitura automática via IA.
-          </p>
-        </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs font-semibold text-ink-2">
-          <Sparkles size={14} className="text-azulejo-700" />
+      {/* Cabeçalho: painel de azulejos (sem foto) */}
+      <BannerSaoLuis
+        eyebrow="Integração GEDUC · Inclusão docente e busca ativa"
+        titulo="Marcação de Frequência"
+        descricao="Registre a chamada digitalmente ou envie uma foto da folha de presença manuscrita para leitura automática via IA."
+      >
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-azulejo-900/70 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur">
+          <Sparkles size={14} className="text-sol" />
           OCR Econômico (Gemini Flash-Lite · ~US$ 0,00018/folha)
         </div>
-      </div>
+      </BannerSaoLuis>
 
       {/* Seletores da Turma */}
       <div className="grid gap-3 rounded-2xl border border-line bg-surface p-4 sm:grid-cols-3">

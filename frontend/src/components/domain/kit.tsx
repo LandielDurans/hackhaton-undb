@@ -21,8 +21,14 @@ export function PageHeader({ eyebrow, title, description, actions, breadcrumb }:
       )}
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
-          {eyebrow && <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-terracota-600">{eyebrow}</div>}
+          {eyebrow && (
+            <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-terracota-600">
+              <span className="azulejo-barrado inline-block h-4 w-4 rounded-[3px] ring-1 ring-azulejo-200 [background-size:16px_16px]" aria-hidden />
+              {eyebrow}
+            </div>
+          )}
           <h1 className="text-2xl md:text-[28px] font-bold text-ink leading-tight">{title}</h1>
+          <div className="faixa-slz-h mt-2 h-[3px] w-16 rounded-full" aria-hidden />
           {description && <p className="mt-1.5 max-w-3xl text-[14.5px] text-ink-2 leading-relaxed">{description}</p>}
         </div>
         {actions && <div className="flex flex-wrap gap-2 shrink-0">{actions}</div>}
